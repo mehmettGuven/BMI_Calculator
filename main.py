@@ -1,53 +1,55 @@
 import tkinter
-from unittest import removeResult
+from logging import lastResort
 
 screen = tkinter.Tk()
 screen.title("BMI Calculator")
-screen.minsize(300,200)
-
-last_result=""
-result=""
-decimal = float()
-
-
-kilo_label = tkinter.Label(text="Enter Your Weight (kg)")
-kilo_label.place(x=95,y=30)
-
-kilo_input = tkinter.Entry(width=16)
-kilo_input.place(x=100,y=52)
-
-kilo_label = tkinter.Label(text="Enter Your Height (cm)")
-kilo_label.place(x=95,y=74)
-
-boy_input = tkinter.Entry(width=16,)
-boy_input.place(x=100,y=96)
-
+screen.config(padx=30,pady=30)
 
 def calculator():
-    global last_result, result,decimal
-    x = float(kilo_input.get())
-    y = float(boy_input.get()) / 100
-    result = x / (y * y)
-    decimal= "%.2f" % result
-    if result <= 18.5:
-        last_result = "Underweight"
-    elif result <= 25:
-        last_result = "Normal Weight"
-    elif result <= 30:
-        last_result = "Overweight"
-    elif result > 30:
-        last_result = "Obese Weight"
+    x = kilo_input.get()
+    y = boy_input.get()
+    if x=="" or y == "":
+        result_label.configure(text="Enter both weight and height!")
+    else:
+        try:
+            result = float(x) / (float(y) / 100)**2
+            last_result = display_text(result)
+            result_label.configure(text=last_result)
+        except:
+            result_label.configure(text="Enter a valid number!")
 
-def display_text():
-    calculator()
-    global result_label, last_result, result, decimal
-    result_label.configure(text=f"Your BMI is {decimal}. You are {last_result}. ")
-
-calculate_button = tkinter.Button(text="Calculate", command= display_text)
-calculate_button.place(x=120,y=118)
-
+#ui
+kilo_label = tkinter.Label(text="Enter Your Weight (kg)")
+kilo_label.pack()
+kilo_input = tkinter.Entry(width=16)
+kilo_input.pack()
+kilo_label = tkinter.Label(text="Enter Your Height (cm)")
+kilo_label.pack()
+boy_input = tkinter.Entry(width=16,)
+boy_input.pack()
+calculate_button = tkinter.Button(text="Calculate", command= calculator)
+calculate_button.pack()
 result_label = tkinter.Label(text="",font=("Arial", 9, "normal"))
-result_label.place(x=40,y=160)
+result_label.pack()
 
+def display_text(result):
+    last_result=f"Your BMI is {round(result,2)}. You are "
+    if result<=16:
+        last_result += "severely thin!"
+    elif 16<result <= 17:
+        last_result += "moderately thin!"
+    elif 17 < result <= 18.5:
+        last_result += "mild thin!"
+    elif 18.5 < result <= 25:
+        last_result += "normal weight"
+    elif 25 < result <= 30:
+        last_result += "overweight"
+    elif 30 < result <= 35:
+        last_result += "obese class 1"
+    elif 35 < result <= 40:
+        last_result += "obese class 2"
+    elif 40 < result:
+        last_result += "obese class 3"
+    return last_result
 
 screen.mainloop()
